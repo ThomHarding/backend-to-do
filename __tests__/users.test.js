@@ -60,7 +60,7 @@ describe('users', () => {
 
   it('POST /api/v1/users/me returns the authenticated user', async () => {
     const [agent, user] = await registerAndLogin();
-    const me = await agent.get('/api/v1/users/me');
+    const me = await agent.post('/api/v1/users/me');
     expect(me.body).toEqual({
       ...user,
       exp: expect.any(Number),
