@@ -64,18 +64,19 @@ describe('todo tests', () => {
     expect(resp.body).toEqual({ ...todo, bought: true });
   });
 
-  it('GET /api/v1/items returns all items associated with the authenticated User', async () => {
+  it('GET /api/v1/todos returns all todos associated with the authenticated User', async () => {
     const [agent, user] = await registerAndLogin();
     const user2 = await UserService.create(mockUser2);
     const user1Todo = await Todo.insert({
-      task_name: 'apples',
+      task_name: 'be the first user',
       user_id: user.id,
     });
     await Todo.insert({
-      task_name: 'eggs',
+      task_name: 'be a different user',
       user_id: user2.id,
     });
-    const resp = await agent.get('/api/v1/items');
+    const resp = await agent.get('/api/v1/todos');
+    console.log(resp);
     expect(resp.status).toEqual(200);
     expect(resp.body).toEqual([user1Todo]);
   });
