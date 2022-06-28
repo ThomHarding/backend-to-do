@@ -43,24 +43,24 @@ describe('todo tests', () => {
       user_id: user.id,
       bought: false,
     });
-
-    it('PUT /api/v1/todos/:id updates a todo if associated with authenticated user', async () => {
-      const [agent, user] = await registerAndLogin();
-      const todo = await Todo.insert({
-        task_name: 'buy some apples',
-        user_id: user.id,
-      });
-      const resp = await agent
-        .put(`/api/v1/todos/${todo.id}`)
-        .send({ bought: true });
-      expect(resp.status).toBe(200);
-      expect(resp.body).toEqual({ ...todo, bought: true });
-    });
-
-    // GET /api/v1/todos/ lists all todos for the authenticated user
-    // DELETE /api/v1/todos/:id deletes a todo if associated with authenticated user
-    // PUT and DELETE routes use an authorize middleware to check authed user
-    // All todo endpoints return a 401 if not authenticated
-    // POST / PUT todo endpoints return a 403 if a user tries to update a todo that's not theirs
   });
+
+  it('PUT /api/v1/todos/:id updates a todo if associated with authenticated user', async () => {
+    const [agent, user] = await registerAndLogin();
+    const todo = await Todo.insert({
+      task_name: 'buy some apples',
+      user_id: user.id,
+    });
+    const resp = await agent
+      .put(`/api/v1/todos/${todo.id}`)
+      .send({ bought: true });
+    expect(resp.status).toBe(200);
+    expect(resp.body).toEqual({ ...todo, bought: true });
+  });
+
+  // GET /api/v1/todos/ lists all todos for the authenticated user
+  // DELETE /api/v1/todos/:id deletes a todo if associated with authenticated user
+  // PUT and DELETE routes use an authorize middleware to check authed user
+  // All todo endpoints return a 401 if not authenticated
+  // POST / PUT todo endpoints return a 403 if a user tries to update a todo that's not theirs
 });
