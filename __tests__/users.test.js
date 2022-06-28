@@ -2,10 +2,10 @@ const pool = require('../lib/utils/pool');
 const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
-// const UserService = require('../lib/services/UserService');
+const UserService = require('../lib/services/UserService');
 
 // const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
-const IS_DEPLOYED = process.env.NODE_ENV === 'production';
+// const IS_DEPLOYED = process.env.NODE_ENV === 'production';
 
 const mockUser = {
   email: 'test@example.com',
@@ -31,12 +31,19 @@ describe('users', () => {
     });
   });
 
-  it('POST /api/v1/users/sessions signs in a new user and creates a cookie', async () => {
-    const res = await request(app).post('/api/v1/users/sessions').send(mockUser);
+  it('POST /api/v1/users/sessions signs in a new user and creates a cookie', async (userProps = {}) => {
+    const password = userProps.password ?? mockUser.password;
+
+    const agent = request.agent(app);
+    const user = await UserService.create({ ...mockUser, ...userProps });
+  
+    const { email } = user;
+    const res = await agent.post('/api/v1/users/sessions').send({
+      email,
+      password });
     expect(res.body).toEqual({
       message: 'Signed in successfully!'
     });
-    expect(res.cookie).toBeTruthy();
   });
 
 });
