@@ -1,6 +1,6 @@
 -- Use this file to define your SQL tables
 -- The SQL in this file will be executed when you run `npm run setup-db`
-DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS todos;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
@@ -9,12 +9,10 @@ CREATE TABLE users (
   password_hash VARCHAR NOT NULL
 );
 
-CREATE TABLE items (
+CREATE TABLE todos (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id BIGINT ,
-  description VARCHAR NOT NULL,
+  task_name VARCHAR NOT NULL,
   bought BOOLEAN NOT NULL DEFAULT(false),
-  qty INT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   FOREIGN KEY (user_id) REFERENCES users(id)
 )

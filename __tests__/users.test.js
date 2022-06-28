@@ -24,7 +24,7 @@ const registerAndLogin = async (userProps = {}) => {
   return [agent, user];
 };
 
-describe('users', () => {
+describe('users tests', () => {
   beforeEach(() => {
     return setup(pool);
   });
