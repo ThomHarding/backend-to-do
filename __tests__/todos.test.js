@@ -92,10 +92,18 @@ describe('todo tests', () => {
     const check = await Todo.getById(todo.id);
     expect(check).toBeNull();
   });
+
+  it('All todo endpoints return a 401 if not authenticated', async () => {
+    const getReq = await request(app).get('/api/v1/todos');
+    expect(getReq.status).toEqual(401);
+    const postReq = await request(app).post('/api/v1/todos');
+    expect(postReq.status).toEqual(401);
+    const putReq = await request(app).put('/api/v1/todos/4')
+      .send({ bought: true });
+    expect(putReq.status).toEqual(401);
+    const deleteReq = await request(app).delete('/api/v1/todos/4');
+    expect(deleteReq.status).toEqual(401);
+  });
 });
 
-// DELETE /api/v1/todos/:id deletes a todo if associated with authenticated user
-// PUT and DELETE routes use an authorize middleware to check authed user
-// All todo endpoints return a 401 if not authenticated
 // POST / PUT todo endpoints return a 403 if a user tries to update a todo that's not theirs
-
