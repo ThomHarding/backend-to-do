@@ -11,6 +11,12 @@ const mockUser = {
   email: 'test@example.com',
   password: '123456',
 };
+const mockUser2 = {
+  firstName: 'Test',
+  lastName: 'User 2',
+  email: 'test2@example.com',
+  password: '123456',
+};
 
 const registerAndLogin = async (userProps = {}) => {
   const password = userProps.password ?? mockUser.password;
@@ -56,6 +62,22 @@ describe('todo tests', () => {
       .send({ bought: true });
     expect(resp.status).toBe(200);
     expect(resp.body).toEqual({ ...todo, bought: true });
+  });
+
+  it('GET /api/v1/items returns all items associated with the authenticated User', async () => {
+    const [agent, user] = await registerAndLogin();
+    const user2 = await UserService.create(mockUser2);
+    const user1Todo = await Todo.insert({
+      task_name: 'apples',
+      user_id: user.id,
+    });
+    await Todo.insert({
+      task_name: 'eggs',
+      user_id: user2.id,
+    });
+    const resp = await agent.get('/api/v1/items');
+    expect(resp.status).toEqual(200);
+    expect(resp.body).toEqual([user1Todo]);
   });
 
   // GET /api/v1/todos/ lists all todos for the authenticated user
