@@ -104,6 +104,23 @@ describe('todo tests', () => {
     const deleteReq = await request(app).delete('/api/v1/todos/4');
     expect(deleteReq.status).toEqual(401);
   });
-});
 
-// POST / PUT todo endpoints return a 403 if a user tries to update a todo that's not theirs
+  it('POST / PUT todo endpoints return a 403 if a user tries to update a todo thats not theirs', async () => {
+  // create a user
+    const [agent] = await registerAndLogin();
+    // create a second user
+    const user2 = await UserService.create(mockUser2);
+    const todo = await Todo.insert({
+      task_name: 'apples',
+      user_id: user2.id,
+    });
+    const resp = await agent
+      .put(`/api/v1/todos/${todo.id}`)
+      .send({ bought: true });
+    expect(resp.status).toBe(403);
+    const deleteResp = await agent
+      .put(`/api/v1/todos/${todo.id}`)
+      .send({ bought: true });
+    expect(deleteResp.status).toBe(403);
+  });
+});
